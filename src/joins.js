@@ -9,7 +9,7 @@
  * edge. The badge rides the longer segment.
  */
 
-import { CARD_W, CARD_H } from './layouts'
+import { CARD_W, CARD_H } from './layouts.js'
 
 const centreOf = (p) => ({ x: p.x + CARD_W / 2, y: p.y + CARD_H / 2 })
 
@@ -248,14 +248,21 @@ function routeAStar(ar, br, ca, cb, obstacles) {
     endNode = [cb.x, down ? br.y1 - DETOUR : br.y2 + DETOUR]
   }
 
+  // Lanes come from two places: a fixed clearance off each card edge, and the
+  // middle of each gap between cards. The second matters because the layouts
+  // only guarantee a 40px gap, so an edge+24 lane does not always fit between
+  // two neighbours — without the midpoints the search has nowhere to go and
+  // falls back to a route that cuts through a card.
   const uniq = (vals) => [...new Set(vals.map((v) => Math.round(v)))].sort((a, b) => a - b)
   const xs = uniq([
     startNode[0], endNode[0],
     ...obstacles.flatMap((r) => [r.x1 - DETOUR, r.x2 + DETOUR]),
+    ...freeLanes(obstacles.map((r) => [r.x1, r.x2])),
   ])
   const ys = uniq([
     startNode[1], endNode[1],
     ...obstacles.flatMap((r) => [r.y1 - DETOUR, r.y2 + DETOUR]),
+    ...freeLanes(obstacles.map((r) => [r.y1, r.y2])),
   ])
   if (xs.length * ys.length > 20000) return null // guard against pathological sizes
 
@@ -435,9 +442,11 @@ export function computeJoinGeometry(positions, joins, tables) {
     const a = positions[j.leftTable]
     const b = positions[j.rightTable]
     if (!a || !b) return
-    const obstacles = Object.keys(positions)
-      .filter((n) => n !== j.leftTable && n !== j.rightTable)
-      .map((n) => rectOf(positions[n]))
+    // Every card is an obstacle, the two being joined included: a route must
+    // not cut through its own target on the way to entering it. Terminating
+    // on an edge is still fine, because the hit test needs a strict interior
+    // crossing — so the stubs that land on A and B are unaffected.
+    const obstacles = Object.keys(positions).map((n) => rectOf(positions[n]))
     const routed = routeJoin(a, b, j.name, obstacles)
     if (!routed) return
     paths.push(routed.d)
@@ -453,3 +462,6 @@ export function computeJoinGeometry(positions, joins, tables) {
 
   return { paths, badges, width: extentX ? extentX + 24 : 0, height: extentY ? extentY + 24 : 0 }
 }
+
+/* Exposed for the routing diagnostics in scripts/route-audit.mjs. */
+export { routeJoin, routeAStar, collisions, rectOf, centreOf }

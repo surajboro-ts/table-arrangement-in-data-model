@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   Button, Icon, SegmentedControl, Select, Toast,
 } from './radiant/components'
-import { DATASOURCE_TABLES, INITIAL_MODEL, MODEL_META, TABS } from './data'
+import { DATASOURCE_TABLES, INITIAL_MODEL, MODEL_META, TABS } from './data.js'
 import LeftPane from './components/LeftPane'
 import TablesCanvas from './components/TablesCanvas'
 import ColumnsGrid from './components/ColumnsGrid'

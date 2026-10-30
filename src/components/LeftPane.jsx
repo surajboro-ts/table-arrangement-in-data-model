@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Button, Icon, SearchBar, Toggle, IconButton } from '../radiant/components'
-import { DATASOURCE_TABLES, MODEL_META } from '../data'
+import { DATASOURCE_TABLES, MODEL_META } from '../data.js'
 
 function PaneHeader({ title, searchPlaceholder, query, onQuery }) {
   return (

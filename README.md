@@ -181,8 +181,20 @@ Routes are scored on two things: crossing a card is disqualifying, and grazing
 one is merely penalised — a 1px line hard against a 1px border reads as part of
 it. The badge rides the longest segment.
 
-Audited across all six states (grid / force / layered, applied and previewed)
+Every card counts as an obstacle, **including the two being joined**. Without
+that, a route was free to run up the inside of its own target and double back
+to enter it from the edge — and the check that was supposed to catch it skipped
+those two cards, so it scored clean. Terminating on an edge is still allowed,
+because the hit test requires a strict interior crossing.
+
+Audited across all seven states (grid / force / layered, applied and previewed)
 on the 23-table model: **zero connector segments pass through a card.**
+`scripts/route-audit.mjs` reruns that check outside the browser:
+
+```bash
+node scripts/route-audit.mjs            # the current force layout
+node scripts/route-audit.mjs pos.json   # a layout dumped from the browser
+```
 
 ## Kept bespoke
 

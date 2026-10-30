@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Icon, IconButton, Menu, MenuItem } from '../radiant/components'
-import { DATASOURCE_TABLES } from '../data'
-import { CARD_W, CARD_H, runArrangement } from '../layouts'
-import { computeJoinGeometry } from '../joins'
+import { DATASOURCE_TABLES } from '../data.js'
+import { CARD_W, CARD_H, runArrangement } from '../layouts.js'
+import { computeJoinGeometry } from '../joins.js'
 
 const MIN_ZOOM = 0.1
 const MAX_ZOOM = 2

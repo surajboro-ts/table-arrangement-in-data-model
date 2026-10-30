@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Icon, IconButton, Menu, MenuItem, Tooltip } from '../radiant/components'
-import { ARRANGEMENTS } from '../layouts'
+import { ARRANGEMENTS } from '../layouts.js'
 
 /** Dwell before an option explains itself. */
 const TOOLTIP_DELAY = 2000
