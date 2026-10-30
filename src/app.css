@@ -1,0 +1,496 @@
+/**
+ * Data model editor — app shell.
+ *
+ * Every colour, space, radius and shadow here is a Radiant token; every piece
+ * of text carries a Radiant type class. Nothing is hardcoded, so the whole
+ * page themes with `document.documentElement.dataset.theme = 'dark'`.
+ */
+
+/* Radiant's reset covers overscroll and scrollbars only, so this is not
+   inherited from it — and without it any element with both a height and
+   padding is that much too tall. The prototype set the same rule. */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  overflow: hidden;
+  background: var(--rd-sys-color-bg-base);
+  color: var(--rd-sys-color-content-primary);
+  font-family: var(--rd-sys-font-family);
+}
+
+.dme {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ── App header ────────────────────────────────────── */
+.dme-header {
+  flex-shrink: 0;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  gap: var(--rd-sys-spacing-h);
+  padding: 0 var(--rd-sys-spacing-e);
+  background: var(--rd-sys-color-bg-base);
+  border-bottom: 1px solid var(--rd-sys-color-border-subtle);
+}
+.dme-header__title {
+  flex-shrink: 0;
+  white-space: nowrap;
+  color: var(--rd-sys-color-content-primary);
+}
+
+/* ── Body / columns ────────────────────────────────── */
+.dme-body { flex: 1; display: flex; overflow: hidden; }
+.dme-main-col { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* ── Sub-header ────────────────────────────────────── */
+.dme-subheader {
+  flex-shrink: 0;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  gap: var(--rd-sys-spacing-c);
+  padding: 0 var(--rd-sys-spacing-e);
+  background: var(--rd-sys-color-bg-base);
+  border-bottom: 1px solid var(--rd-sys-color-border-subtle);
+}
+.dme-subheader__info { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.dme-subheader__name { color: var(--rd-sys-color-content-primary); }
+.dme-subheader__desc { color: var(--rd-sys-color-content-secondary); }
+.dme-subheader__actions { display: flex; align-items: center; gap: var(--rd-sys-spacing-d); }
+.dme-subheader__select { width: 160px; }
+.dme-subheader__select--zoom { width: 104px; }
+
+/* ── Content row ───────────────────────────────────── */
+.dme-content-row { flex: 1; display: flex; overflow: hidden; position: relative; }
+
+/* ── Left pane ─────────────────────────────────────── */
+.dme-pane {
+  width: 260px;
+  min-width: 260px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--rd-sys-color-bg-base);
+  border-right: 1px solid var(--rd-sys-color-border-subtle);
+  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              min-width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.25s ease;
+}
+.dme-pane.is-hidden {
+  width: 0;
+  min-width: 0;
+  opacity: 0;
+  border-right-width: 0;
+}
+.dme-pane__section { flex: 1; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+
+.dme-pane__header {
+  flex-shrink: 0;
+  padding: var(--rd-sys-spacing-c) var(--rd-sys-spacing-d);
+  background: var(--rd-sys-color-bg-on-base);
+  border-bottom: 1px solid var(--rd-sys-color-border-subtle);
+}
+.dme-pane__connection {
+  display: flex;
+  align-items: center;
+  gap: var(--rd-sys-spacing-a);
+  margin-bottom: var(--rd-sys-spacing-a);
+}
+.dme-pane__connection-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--rd-sys-color-content-secondary);
+}
+.dme-pane__title-row { display: flex; align-items: center; justify-content: space-between; }
+.dme-pane__title { color: var(--rd-sys-color-content-primary); }
+.dme-pane__search { margin-top: var(--rd-sys-spacing-b); }
+.dme-pane__filters {
+  display: flex;
+  align-items: center;
+  gap: var(--rd-sys-spacing-a);
+  padding-top: var(--rd-sys-spacing-b);
+}
+
+.dme-pane__list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* The list scrolls, so it is spaced for reading rather than squeezed to fit
+     every table in one screen. */
+  gap: var(--rd-sys-spacing-c);
+  padding: var(--rd-sys-spacing-c) var(--rd-sys-spacing-d);
+}
+.dme-pane__list--tree { align-items: stretch; gap: var(--rd-sys-spacing-b); }
+.dme-pane__list::-webkit-scrollbar { width: 4px; }
+.dme-pane__list::-webkit-scrollbar-thumb {
+  background: var(--rd-sys-color-border-subtle);
+  border-radius: var(--rd-sys-radius-4);
+}
+.dme-pane__empty {
+  width: 100%;
+  padding: var(--rd-sys-spacing-h) var(--rd-sys-spacing-e);
+  text-align: center;
+  color: var(--rd-sys-color-content-tertiary);
+}
+.dme-pane__footer {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: var(--rd-sys-spacing-b) var(--rd-sys-spacing-d);
+  background: var(--rd-sys-color-bg-base);
+  border-top: 1px solid var(--rd-sys-color-border-subtle);
+}
+
+/* ── Draggable chips (table / column pills) ────────── */
+.dme-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rd-sys-spacing-b);
+  height: 28px;
+  /* Radiant README gotcha #1: in an *overflowing* flex column the main axis is
+     vertical, so without this every chip is shrunk — 28px down to 8px once the
+     table list is longer than the pane. */
+  flex-shrink: 0;
+  max-width: 100%;
+  padding: var(--rd-sys-spacing-a) var(--rd-sys-spacing-b) var(--rd-sys-spacing-a) var(--rd-sys-spacing-a);
+  border: 0;
+  border-radius: var(--rd-sys-radius-4);
+  background: var(--rd-sys-color-bg-on-base);
+  box-shadow: var(--rd-sys-elevation-surface);
+  overflow: hidden;
+  font: inherit;
+  text-align: left;
+}
+.dme-chip:disabled { opacity: 1; }
+.dme-chip--draggable { cursor: grab; }
+.dme-chip--draggable:active { cursor: grabbing; }
+.dme-chip--table { background: var(--rd-sys-color-bg-accent-blue); }
+.dme-chip--col { background: var(--rd-sys-color-bg-base); }
+/* Already in the model: the darker gray surface token, flat and not draggable. */
+.dme-chip.is-added {
+  background: var(--rd-sys-color-bg-secondary-action);
+  box-shadow: none;
+  cursor: default;
+}
+/* Muted, but still readable — most of this list is already in the model, so
+   tertiary on the darker surface would leave it all but illegible. */
+.dme-chip.is-added .dme-chip__label { color: var(--rd-sys-color-content-secondary); }
+.dme-chip__grip { flex-shrink: 0; color: var(--rd-sys-color-content-tertiary); }
+.dme-chip__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--rd-sys-color-content-primary);
+}
+
+/* ── Column tree ───────────────────────────────────── */
+.dme-tree__group { display: flex; flex-direction: column; gap: var(--rd-sys-spacing-a); flex-shrink: 0; }
+.dme-tree__row {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--rd-sys-spacing-a);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  min-width: 0;
+}
+.dme-tree__chevron {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--rd-sys-color-content-secondary);
+}
+.dme-tree__chevron .rad-icon { transition: transform 0.18s ease; }
+.dme-tree__chevron.is-open .rad-icon { transform: rotate(90deg); }
+.dme-tree__cols {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--rd-sys-spacing-a);
+  padding-left: var(--rd-sys-spacing-e);
+}
+
+/* ── Stage (main content area) ─────────────────────── */
+.dme-stage {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--rd-sys-color-bg-base);
+}
+.dme-stage.is-drag-over {
+  outline: 2px dashed var(--rd-sys-color-border-brand);
+  outline-offset: -4px;
+  background: var(--rd-sys-color-bg-ghost-highlight);
+}
+
+/* ── Model canvas ──────────────────────────────────── */
+.dme-canvas {
+  position: absolute;
+  inset: 0;
+  overflow: auto;
+}
+/* Cards are absolutely positioned by the arrangement engine, so the inner
+   surface is sized to their bounding box and drives the scrollbars. */
+.dme-canvas__inner {
+  position: relative;
+  min-width: 100%;
+  min-height: 100%;
+}
+.dme-canvas::-webkit-scrollbar { width: 6px; height: 6px; }
+.dme-canvas::-webkit-scrollbar-thumb {
+  background: var(--rd-sys-color-border-subtle);
+  border-radius: var(--rd-sys-radius-4);
+}
+
+.dme-table-card {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--rd-sys-spacing-a);
+  padding: var(--rd-sys-spacing-c);
+  border: 1px solid var(--rd-sys-color-content-primary);
+  border-radius: var(--rd-sys-radius-4);
+  background: var(--rd-sys-color-bg-raised);
+}
+.dme-table-card__header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 20px;
+}
+.dme-table-card__label { color: var(--rd-sys-color-content-secondary); }
+.dme-table-card__name { color: var(--rd-sys-color-content-primary); flex: 1; }
+.dme-table-card__count { color: var(--rd-sys-color-content-secondary); margin-top: auto; }
+.dme-table-card__menu { position: absolute; top: 24px; right: 0; z-index: 20; }
+.dme-table-card.is-movable { cursor: grab; touch-action: none; }
+.dme-table-card.is-movable:active { cursor: grabbing; }
+.dme-table-card.is-movable .dme-table-card__name { user-select: none; }
+
+/* ── Arrangement switcher ──────────────────────────── */
+.dme-arrange { position: relative; display: inline-flex; }
+.dme-arrange__pop {
+  position: absolute;
+  top: calc(100% + var(--rd-sys-spacing-a));
+  right: 0;
+  z-index: 60;
+  min-width: 184px;
+}
+
+/* Join rules sit under the cards; badges sit over them. */
+.dme-join-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 0;
+}
+.dme-join-badge { position: absolute; z-index: 2; pointer-events: none; }
+
+/* ── Grids (Columns / Formulas) ────────────────────── */
+.dme-grid-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0 var(--rd-sys-spacing-f);
+}
+.dme-grid-wrap > .rad-objecttable {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.dme-grid-wrap .rad-table-wrap { flex: 1; min-height: 0; overflow: auto; }
+.dme-grid-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--rd-sys-spacing-c);
+  width: 100%;
+}
+.dme-grid-toolbar__search { width: 240px; }
+
+.dme-row-menu { position: relative; display: inline-flex; justify-content: flex-end; }
+.dme-row-menu__pop { position: absolute; top: calc(100% + 4px); right: 0; z-index: 30; }
+.dme-menu-item--danger .rad-menu-item__label { color: var(--rd-sys-color-content-failure); }
+
+/* ── Empty states ──────────────────────────────────── */
+.dme-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--rd-sys-spacing-d);
+  text-align: center;
+  padding: var(--rd-sys-spacing-f);
+}
+.dme-empty__icon { color: var(--rd-sys-color-content-tertiary); }
+.dme-empty__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--rd-sys-spacing-b);
+}
+.dme-empty__title { color: var(--rd-sys-color-content-primary); }
+.dme-empty__desc { color: var(--rd-sys-color-content-secondary); max-width: 296px; }
+.dme-empty__action { display: flex; align-items: center; gap: var(--rd-sys-spacing-a); }
+.dme-empty__divider {
+  width: 280px;
+  height: 0;
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--rd-sys-color-border-subtle);
+  flex-shrink: 0; /* Radiant README gotcha #1 — keeps the rule from collapsing. */
+}
+.dme-empty__secondary { color: var(--rd-sys-color-content-secondary); }
+
+.dme-suggestion-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rd-sys-spacing-a);
+  padding: 3px var(--rd-sys-spacing-a);
+  border: 0;
+  border-radius: var(--rd-sys-radius-6);
+  background: none;
+  color: var(--rd-sys-color-content-brand);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+.dme-suggestion-link:hover { background: var(--rd-sys-color-bg-ghost-hover); }
+
+@keyframes dme-arrow-slide {
+  from { transform: translateX(-2px); }
+  to   { transform: translateX(2px); }
+}
+.dme-moving-arrow {
+  flex-shrink: 0;
+  color: var(--rd-sys-color-content-brand);
+  animation: dme-arrow-slide 650ms ease-out infinite alternate;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dme-moving-arrow { animation: none; }
+}
+
+/* ── App footer ────────────────────────────────────── */
+.dme-footer {
+  flex-shrink: 0;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--rd-sys-spacing-f);
+  background: var(--rd-sys-color-bg-on-base);
+  border-top: 6px solid var(--rd-sys-color-bg-brand);
+}
+
+/* ── Toast host ────────────────────────────────────── */
+.dme-toast-host {
+  position: fixed;
+  left: 50%;
+  bottom: var(--rd-sys-spacing-j);
+  transform: translateX(-50%);
+  z-index: 400;
+}
+
+/* Grid cells hold identifiers — keep them on one line and truncate, and let
+   the table scroll horizontally rather than crushing the columns. */
+.dme-grid-wrap .rad-table { table-layout: fixed; }
+.dme-grid-wrap--columns .rad-table { min-width: 1060px; }
+.dme-grid-wrap .rad-table th,
+.dme-grid-wrap .rad-table td { overflow: hidden; }
+.dme-grid-wrap .rad-table th { white-space: nowrap; }
+.dme-grid-wrap .rad-cell__text,
+.dme-grid-wrap .rad-cell__desc {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Arrangement menu rows ─────────────────────────── */
+.dme-arrange__row { position: relative; display: block; }
+/* Radiant colours the activated label brand-blue; the Figma colours the
+   leading glyph too. Scoped here rather than changed in the library. */
+.dme-arrange__pop .rad-menu-item.is-activated .rad-menu-item__icon {
+  color: var(--rd-sys-color-content-brand);
+}
+/* Leave room for the restore affordance sitting over the row. */
+.dme-arrange__pop .dme-arrange__item--has-restore { padding-right: 36px; }
+.dme-arrange__restore {
+  position: absolute;
+  top: 50%;
+  right: var(--rd-sys-spacing-b);
+  transform: translateY(-50%);
+  display: inline-flex;
+}
+
+/* ── Arrangement preview ───────────────────────────── */
+/* Hovering a menu option shows that layout as dashed ghosts, so you can see
+   where the tables would land before committing to it. */
+.dme-canvas.is-previewing .dme-table-card {
+  opacity: 0.8;
+  border-style: dashed;
+  background: transparent;
+  box-shadow: none;
+  cursor: default;
+}
+.dme-canvas.is-previewing .dme-table-card .rad-iconbtn { visibility: hidden; }
+/* Dashed to match the ghosted cards, so the whole preview reads as provisional. */
+.dme-canvas.is-previewing .dme-join-svg path {
+  opacity: 0.8;
+  stroke-dasharray: 4 3;
+}
+.dme-canvas.is-previewing .dme-join-badge { opacity: 0.8; }
+
+/* Radiant's Tooltip wraps its trigger in an inline span; left inline, it stops
+   the menu item's hover and selected bands short of the menu's full width. */
+.dme-arrange__row .rad-tooltip-trigger { display: block; width: 100%; }
+.dme-arrange__row .rad-menu-item { width: 100%; }
+
+/* Zoom wrapper: sized to the scaled extent so the scrollbars stay honest,
+   while the inner surface keeps its 1:1 coordinates. */
+.dme-canvas__scroll { position: relative; }
+/* The restore button is wrapped in a Tooltip trigger span; keep it from
+   disturbing the absolutely-positioned affordance. */
+.dme-arrange__restore .rad-tooltip-trigger { display: inline-flex; }
+
+/* Zoom changes from a preview or a selection are eased so the rescale reads
+   as a movement rather than a jump; a pinch or a drag is left immediate. */
+.dme-canvas__inner { transition: transform 220ms cubic-bezier(0.4, 0, 0.2, 1); }
+.dme-canvas__inner.is-live { transition: none; }
+.dme-canvas__scroll { transition: width 220ms cubic-bezier(0.4, 0, 0.2, 1), height 220ms cubic-bezier(0.4, 0, 0.2, 1); }
+.dme-canvas__inner.is-live + .dme-canvas__scroll,
+.dme-canvas.is-dragging .dme-canvas__scroll { transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  .dme-canvas__inner, .dme-canvas__scroll { transition: none; }
+}
+
+/* SpotterModel avatar — the last item in the CTA row (Figma 1346:22006). */
+.dme-subheader__avatar { display: block; flex-shrink: 0; border-radius: 50%; }
