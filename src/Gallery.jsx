@@ -25,10 +25,56 @@ function Remaining() {
   const [tab, setTab] = useState('Overview')
   return (
     <section className="gal">
-      <header className="gal__header">
+      <header className="gal__header" id="app-shell">
+        <h2 className="rd-title-page">App shell</h2>
+        <p className="rd-body gal__lede">
+          TopNav and SideNav are designed as a pair. Both are slot-driven and
+          carry no product data of their own.
+        </p>
+      </header>
+
+      <div className="gal-shell">
+        <TopNav
+          logo={<Icon name="liveboard" size={22} />}
+          search={<NavSearch phrases={['Search…', 'Ask a question…']} />}
+          actions={
+            <>
+              <IconButton variant="ghost" aria-label="Help" icon={<Icon name="question-mark" size={18} />} />
+              <IconButton variant="ghost" aria-label="Notifications" dot icon={<Icon name="bell" size={18} />} />
+            </>
+          }
+          account={<><OrgSwitcher org="ThoughtSpot" /><UserProfile user="Suraj Boro" /></>}
+        />
+        <div className="gal-shell__body">
+          <SideNav
+            apps={[
+              { icon: 'liveboard', label: 'Liveboards', active: true },
+              { icon: 'answer', label: 'Answers' },
+              { icon: 'model', label: 'Models' },
+              { icon: 'database', label: 'Connections' },
+            ]}
+            title="Liveboards"
+            onAdd={() => {}}
+            addLabel="New liveboard"
+            items={[
+              { label: 'Retail Sales Analytics', active: true },
+              { label: 'Inventory health' },
+              { label: 'Customer satisfaction' },
+              { section: 'Shared with me' },
+              { label: 'Regional performance' },
+              { label: 'Supplier scorecard', external: true },
+              { section: 'Favourites' },
+              { label: 'Daily revenue' },
+            ]}
+          />
+          <div className="gal-shell__canvas rd-body">Page content</div>
+        </div>
+      </div>
+
+      <header className="gal__header gal__header--sub" id="also">
         <h2 className="rd-title-page">Also in the library</h2>
         <p className="rd-body gal__lede">
-          Sixteen components the shipped catalogue above does not cover.
+          Sixteen more components the shipped catalogue above does not cover.
         </p>
       </header>
 
@@ -143,60 +189,34 @@ function Remaining() {
         </Spec>
       </div>
 
-      <header className="gal__header gal__header--sub">
-        <h3 className="rd-title-modal">App shell</h3>
-        <p className="rd-body gal__lede">
-          TopNav and SideNav are designed as a pair. Both are slot-driven and
-          carry no product data of their own.
-        </p>
-      </header>
-
-      <div className="gal-shell">
-        <TopNav
-          logo={<Icon name="liveboard" size={22} />}
-          search={<NavSearch phrases={['Search…', 'Ask a question…']} />}
-          actions={
-            <>
-              <IconButton variant="ghost" aria-label="Help" icon={<Icon name="question-mark" size={18} />} />
-              <IconButton variant="ghost" aria-label="Notifications" dot icon={<Icon name="bell" size={18} />} />
-            </>
-          }
-          account={<><OrgSwitcher org="ThoughtSpot" /><UserProfile user="Suraj Boro" /></>}
-        />
-        <div className="gal-shell__body">
-          <SideNav
-            apps={[
-              { icon: 'liveboard', label: 'Liveboards', active: true },
-              { icon: 'answer', label: 'Answers' },
-              { icon: 'model', label: 'Models' },
-              { icon: 'database', label: 'Connections' },
-            ]}
-            title="Liveboards"
-            onAdd={() => {}}
-            addLabel="New liveboard"
-            items={[
-              { label: 'Retail Sales Analytics', active: true },
-              { label: 'Inventory health' },
-              { label: 'Customer satisfaction' },
-              { section: 'Shared with me' },
-              { label: 'Regional performance' },
-              { label: 'Supplier scorecard', external: true },
-              { section: 'Favourites' },
-              { label: 'Daily revenue' },
-            ]}
-          />
-          <div className="gal-shell__canvas rd-body">Page content</div>
-        </div>
-      </div>
     </section>
+  )
+}
+
+/** The page runs to several screens, so it needs a way to get around. */
+function JumpBar() {
+  const go = (id) => (e) => {
+    e.preventDefault()
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+  return (
+    <nav className="gal-jump" aria-label="Gallery sections">
+      <span className="gal-jump__brand rd-label-subhead">Radiant</span>
+      <a href="#app-shell" className="rd-body" onClick={go('app-shell')}>App shell</a>
+      <a href="#also" className="rd-body" onClick={go('also')}>Also in the library</a>
+      <a href="#catalogue" className="rd-body" onClick={go('catalogue')}>Full catalogue</a>
+    </nav>
   )
 }
 
 export default function Gallery() {
   return (
     <>
-      <RadiantApp />
+      <JumpBar />
       <Remaining />
+      <div id="catalogue">
+        <RadiantApp />
+      </div>
     </>
   )
 }

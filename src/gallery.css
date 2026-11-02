@@ -65,3 +65,19 @@
   color: var(--rd-sys-color-content-tertiary);
   background: var(--rd-sys-color-bg-base);
 }
+
+/* Jump bar — the gallery runs to several screens, so it needs navigation. */
+.gal-jump {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: var(--rd-sys-spacing-f);
+  padding: var(--rd-sys-spacing-c) var(--rd-sys-spacing-f);
+  background: var(--rd-sys-color-bg-raised);
+  border-bottom: 1px solid var(--rd-sys-color-border-subtle);
+}
+.gal-jump__brand { color: var(--rd-sys-color-content-primary); margin-right: auto; }
+.gal-jump a { color: var(--rd-sys-color-content-secondary); text-decoration: none; }
+.gal-jump a:hover { color: var(--rd-sys-color-content-brand); }
