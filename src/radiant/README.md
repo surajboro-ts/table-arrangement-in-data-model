@@ -5,11 +5,14 @@ system (built from the Figma specs + tokens). This folder is **fully self-contai
 it imports only React and files within this folder. Drop it into any React + Vite
 project and use it.
 
-- **39 components** (`components/`) — Button, IconButton, SplitButton, Link, Checkbox,
+- **41 components** (`components/`) — Button, IconButton, SplitButton, Link, Checkbox,
   Radio, Toggle, SegmentedControl, Input, Textarea, NumberInput, Select, SearchBar,
   Field, Chip, TriggerChip, Tag, Avatar/AvatarGroup, Icon, Menu, Modal, Tabs, Banner,
   Divider, ExplainerCard, Tooltip, Toast, Spinner, PageLoader, Shimmer, ProgressBar, Stepper,
-  ListItem, Breadcrumb, Pagination, ObjectTable, OrgSwitcher, UserProfile, NavSearch.
+  ListItem, Breadcrumb, Pagination, ObjectTable, OrgSwitcher, UserProfile, NavSearch,
+  TopNav, SideNav.
+  TopNav and SideNav are the app shell: both are slot- or prop-driven and carry
+  no product data, and they are designed to be used together.
 - **189 icons** (`icons/svg/`) — themeable via `currentColor`, any size.
 - **Design tokens** (`tokens/`) — color (light + dark), spacing, radius, typography,
   elevation.

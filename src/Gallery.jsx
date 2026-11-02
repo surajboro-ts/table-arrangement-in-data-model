@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import RadiantApp from './radiant/RadiantApp'
 import {
-  Banner, Breadcrumb, Divider, ExplainerCard, Field, Icon, ListItem, NavSearch,
-  OrgSwitcher, PageLoader, Pagination, Shimmer, Spinner, Tabs, Toast, Tooltip,
-  UserProfile, Button,
+  Banner, Breadcrumb, Divider, ExplainerCard, Field, Icon, IconButton, ListItem,
+  NavSearch, OrgSwitcher, PageLoader, Pagination, Shimmer, SideNav, Spinner,
+  Tabs, Toast, Tooltip, TopNav, UserProfile, Button,
 } from './radiant/components'
 
 /** One labelled specimen in the supplementary grid. */
@@ -141,6 +141,52 @@ function Remaining() {
         <Spec name="NavSearch" note="Cycles its placeholder phrases">
           <NavSearch phrases={['Search tables…', 'Ask about revenue…', 'Find a join…']} />
         </Spec>
+      </div>
+
+      <header className="gal__header gal__header--sub">
+        <h3 className="rd-title-modal">App shell</h3>
+        <p className="rd-body gal__lede">
+          TopNav and SideNav are designed as a pair. Both are slot-driven and
+          carry no product data of their own.
+        </p>
+      </header>
+
+      <div className="gal-shell">
+        <TopNav
+          logo={<Icon name="liveboard" size={22} />}
+          search={<NavSearch phrases={['Search…', 'Ask a question…']} />}
+          actions={
+            <>
+              <IconButton variant="ghost" aria-label="Help" icon={<Icon name="question-mark" size={18} />} />
+              <IconButton variant="ghost" aria-label="Notifications" dot icon={<Icon name="bell" size={18} />} />
+            </>
+          }
+          account={<><OrgSwitcher org="ThoughtSpot" /><UserProfile user="Suraj Boro" /></>}
+        />
+        <div className="gal-shell__body">
+          <SideNav
+            apps={[
+              { icon: 'liveboard', label: 'Liveboards', active: true },
+              { icon: 'answer', label: 'Answers' },
+              { icon: 'model', label: 'Models' },
+              { icon: 'database', label: 'Connections' },
+            ]}
+            title="Liveboards"
+            onAdd={() => {}}
+            addLabel="New liveboard"
+            items={[
+              { label: 'Retail Sales Analytics', active: true },
+              { label: 'Inventory health' },
+              { label: 'Customer satisfaction' },
+              { section: 'Shared with me' },
+              { label: 'Regional performance' },
+              { label: 'Supplier scorecard', external: true },
+              { section: 'Favourites' },
+              { label: 'Daily revenue' },
+            ]}
+          />
+          <div className="gal-shell__canvas rd-body">Page content</div>
+        </div>
       </div>
     </section>
   )

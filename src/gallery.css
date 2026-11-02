@@ -43,3 +43,25 @@
 .gal-stack--tight { gap: var(--rd-sys-spacing-a); }
 .gal-row { display: flex; flex-wrap: wrap; gap: var(--rd-sys-spacing-b); min-width: 0; }
 .gal-row--center { align-items: center; }
+
+/* App-shell specimen: TopNav + SideNav shown together, as they are designed. */
+.gal__header--sub { margin-top: var(--rd-sys-spacing-j); }
+.gal__header--sub h3 { margin: 0 0 var(--rd-sys-spacing-b); color: var(--rd-sys-color-content-primary); }
+.gal-shell {
+  display: flex;
+  flex-direction: column;
+  height: 420px;
+  overflow: hidden;
+  border: 1px solid var(--rd-sys-color-border-subtle);
+  border-radius: var(--rd-sys-radius-12);
+  background: var(--rd-sys-color-bg-base);
+}
+.gal-shell__body { flex: 1 1 auto; display: flex; min-height: 0; }
+.gal-shell__canvas {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--rd-sys-color-content-tertiary);
+  background: var(--rd-sys-color-bg-base);
+}

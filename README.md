@@ -53,6 +53,9 @@ sixteen exports the shipped catalogue does not reach: Tabs, Banner,
 ExplainerCard, Field, Tooltip, Toast, Spinner, PageLoader, Shimmer, ListItem,
 Breadcrumb, Pagination, Divider, OrgSwitcher, UserProfile and NavSearch.
 
+It ends with an **App shell** specimen showing `TopNav` and `SideNav` together,
+which is how they are meant to be used.
+
 Everything on the page is tokenised, so
 `document.documentElement.dataset.theme = 'dark'` themes the whole catalogue.
 
