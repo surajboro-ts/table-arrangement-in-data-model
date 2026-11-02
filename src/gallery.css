@@ -1,0 +1,45 @@
+/* Supplementary gallery section — the components RadiantApp does not cover. */
+.gal {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: var(--rd-sys-spacing-j) var(--rd-sys-spacing-f) var(--rd-sys-spacing-l);
+  background: var(--rd-sys-color-bg-base);
+}
+.gal__header { margin-bottom: var(--rd-sys-spacing-h); }
+.gal__header h2 { margin: 0 0 var(--rd-sys-spacing-b); color: var(--rd-sys-color-content-primary); }
+.gal__lede { margin: 0; color: var(--rd-sys-color-content-secondary); }
+
+.gal__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--rd-sys-spacing-f);
+  align-items: start;
+}
+
+.gal-spec {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rd-sys-spacing-b);
+  padding: var(--rd-sys-spacing-d);
+  border: 1px solid var(--rd-sys-color-border-subtle);
+  border-radius: var(--rd-sys-radius-12);
+  background: var(--rd-sys-color-bg-raised);
+  min-width: 0;
+}
+.gal-spec__name { color: var(--rd-sys-color-content-primary); }
+.gal-spec__note { color: var(--rd-sys-color-content-secondary); margin-top: -4px; }
+.gal-spec__stage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rd-sys-spacing-b);
+  padding: var(--rd-sys-spacing-d);
+  border-radius: var(--rd-sys-radius-8);
+  background: var(--rd-sys-color-bg-on-base);
+  min-width: 0;
+  overflow: visible;
+}
+
+.gal-stack { display: flex; flex-direction: column; gap: var(--rd-sys-spacing-b); min-width: 0; }
+.gal-stack--tight { gap: var(--rd-sys-spacing-a); }
+.gal-row { display: flex; flex-wrap: wrap; gap: var(--rd-sys-spacing-b); min-width: 0; }
+.gal-row--center { align-items: center; }

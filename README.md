@@ -38,6 +38,24 @@ Dark mode is live — `document.documentElement.dataset.theme = 'dark'`.
 | inline SVG + `assets/*.svg` glyphs | `Icon` (189-glyph set) |
 | `.empty-divider` | `Divider` tokens |
 
+## Component gallery
+
+`?gallery` renders the Radiant catalogue instead of the editor.
+
+```
+http://localhost:5178/?gallery
+```
+
+It is `RadiantApp.tsx` — the library's own living catalogue, covering buttons,
+links, inputs, selects, menus, modals, tables, chips, avatars, steppers and all
+189 icons — followed by **Also in the library**, a supplementary section for the
+sixteen exports the shipped catalogue does not reach: Tabs, Banner,
+ExplainerCard, Field, Tooltip, Toast, Spinner, PageLoader, Shimmer, ListItem,
+Breadcrumb, Pagination, Divider, OrgSwitcher, UserProfile and NavSearch.
+
+Everything on the page is tokenised, so
+`document.documentElement.dataset.theme = 'dark'` themes the whole catalogue.
+
 ## The model
 
 The editor boots with **Enterprise Retail Analytics** — 23 tables and 30 joins,
