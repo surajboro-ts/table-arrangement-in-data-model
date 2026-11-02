@@ -23,6 +23,7 @@ function Spec({ name, children, note }) {
  */
 function Remaining() {
   const [tab, setTab] = useState('Overview')
+  const [nav, setNav] = useState('Retail Sales Analytics')
   return (
     <section className="gal">
       <header className="gal__header" id="app-shell">
@@ -57,17 +58,17 @@ function Remaining() {
             onAdd={() => {}}
             addLabel="New liveboard"
             items={[
-              { label: 'Retail Sales Analytics', active: true },
-              { label: 'Inventory health' },
-              { label: 'Customer satisfaction' },
+              { label: 'Retail Sales Analytics', active: nav === 'Retail Sales Analytics', onClick: () => setNav('Retail Sales Analytics') },
+              { label: 'Inventory health', active: nav === 'Inventory health', onClick: () => setNav('Inventory health') },
+              { label: 'Customer satisfaction', active: nav === 'Customer satisfaction', onClick: () => setNav('Customer satisfaction') },
               { section: 'Shared with me' },
-              { label: 'Regional performance' },
-              { label: 'Supplier scorecard', external: true },
+              { label: 'Regional performance', active: nav === 'Regional performance', onClick: () => setNav('Regional performance') },
+              { label: 'Supplier scorecard', external: true, onClick: () => {} },
               { section: 'Favourites' },
-              { label: 'Daily revenue' },
+              { label: 'Daily revenue', active: nav === 'Daily revenue', onClick: () => setNav('Daily revenue') },
             ]}
           />
-          <div className="gal-shell__canvas rd-body">Page content</div>
+          <div className="gal-shell__canvas rd-body">{nav}</div>
         </div>
       </div>
 

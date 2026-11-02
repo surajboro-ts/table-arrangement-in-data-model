@@ -96,6 +96,19 @@
   padding: 0 var(--rd-sys-spacing-d);
   color: var(--rd-sys-color-content-primary);
   cursor: pointer;
+  /* An activatable row renders as a <button>; strip the UA styling so it reads
+     exactly as the non-interactive rows do. */
+  width: 100%;
+  border: none;
+  background: none;
+  font: inherit;
+  text-align: left;
+}
+/* Focus ring — Radiant focus border token. Inset so it is not clipped by the
+   rail's overflow on a full-bleed row. */
+.rad-navitem:focus-visible {
+  outline: 2px solid var(--rd-sys-color-border-focus);
+  outline-offset: -2px;
 }
 .rad-navitem:hover { background: var(--rd-sys-color-bg-ghost-hover); }
 .rad-navitem.is-active,

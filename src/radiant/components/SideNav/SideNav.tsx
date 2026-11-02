@@ -99,17 +99,22 @@ export function SideNav({
           'section' in item ? (
             <div key={`s${i}`} className="rad-sidenav__section">{item.section}</div>
           ) : (
-            <div
-              key={`i${i}`}
-              className={`rad-navitem${item.active ? ' is-active' : ''}`}
-              onClick={item.onClick}
-              role={item.onClick ? 'button' : undefined}
-              tabIndex={item.onClick ? 0 : undefined}
-            >
-              {item.favicon && <span className="rad-navitem__fav">{item.favicon}</span>}
-              <span className="rad-navitem__label rd-body">{item.label}</span>
-              {item.external && <ExternalLink />}
-            </div>
+            // A real button when it does something, so Enter and Space work and
+            // it is focusable, without hand-rolling key handling. A plain div
+            // when there is nothing to activate.
+            React.createElement(
+              item.onClick ? 'button' : 'div',
+              {
+                key: `i${i}`,
+                className: `rad-navitem${item.active ? ' is-active' : ''}`,
+                ...(item.onClick
+                  ? { type: 'button', onClick: item.onClick, 'aria-current': item.active ? 'page' : undefined }
+                  : {}),
+              },
+              item.favicon && <span key="f" className="rad-navitem__fav">{item.favicon}</span>,
+              <span key="l" className="rad-navitem__label rd-body">{item.label}</span>,
+              item.external && <ExternalLink key="e" />,
+            )
           ),
         )}
       </div>
